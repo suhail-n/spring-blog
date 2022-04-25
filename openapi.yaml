@@ -1,0 +1,660 @@
+openapi: 3.0.1
+info:
+  title: Spring Blog
+  description: 'This is a sample Spring Blog server rest api doc.  You can find out more about     Swagger
+    at [http://swagger.io](http://swagger.io) or on [irc.freenode.net, #swagger](http://swagger.io/irc/).      For
+    this sample, you can use the api key `special-key` to test the authorization     filters.'
+  termsOfService: http://swagger.io/terms/
+  contact:
+    email: apiteam@swagger.io
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+externalDocs:
+  description: Find out more about Swagger
+  url: http://swagger.io
+servers:
+- url: https://springblog.swagger.io/v2
+- url: http://springblog.swagger.io/v2
+tags:
+- name: posts
+  description: APIs for blog posts
+  externalDocs:
+    description: Find out more
+    url: http://swagger.io
+- name: comments
+  description: API for blog post comments
+- name: auth
+  description: Operations about user
+  externalDocs:
+    description: Find out more about our store
+    url: http://swagger.io
+paths:
+  /posts/{id}:
+    put:
+      tags:
+      - posts
+      summary: Update an existing post
+      operationId: updatePost
+      parameters:
+        - name: id
+          in: path
+          description: ID of post to update
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Post object updated state
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Post'
+        required: true
+      responses:
+        204:
+          description: Successfully updated a post.
+          content: {}
+        401:
+          description: Unauthenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseError'
+                
+        403:
+          description: User is forbidden to update another users post 
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseError'
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseError'
+        422:
+          description: Validation Failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseError'
+        404:
+          description: Resource Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseError'
+    get:
+      tags:
+        - posts
+      summary: Get an existing post
+      operationId: getPost
+      parameters:
+        - name: id
+          in: path
+          description: ID of post to get
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          description: Successfully updated a post.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+        404:
+          description: Resource Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseError'
+      security:
+        - {}
+    delete:
+      tags:
+        - posts
+      summary: Delete an existing post
+      operationId: deletePost
+      parameters:
+        - name: id
+          in: path
+          description: ID of post to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        204:
+          description: Successfully deleted a post.
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Post is successfully deleted
+        404:
+          description: Resource Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseError'
+        401:
+          description: Unauthenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseError'
+        403:
+          description: User is forbidden to delete another users post
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseError'
+  /posts:
+    post:
+      tags:
+      - posts
+      summary: create a new post
+      operationId: createPost
+      requestBody:
+        description: Post object that needs to be added to the store
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Post'
+        required: true
+      responses:
+        200:
+          description: Successfully created a post.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+        401:
+          description: Unauthenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseError'
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseError'
+        422:
+          description: Validation Failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseError'
+    get:
+      tags:
+      - posts
+      summary: get all posts
+      operationId: getPosts
+      parameters:
+        - in: query
+          name: pageNo
+          description: "Page number to load. Default: 0"
+          required: false
+          schema:
+            type: integer
+        - in: query
+          name: pageSize
+          description: "Default: 10"
+          required: false
+          schema:
+            type: integer
+        - in: query
+          name: sortBy
+          description: "Default: id"
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: sortDir
+          description: "Default: asc"
+          required: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: Successfully retrieved all posts
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllPosts'
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseError'
+              
+      security:
+        - {}
+      
+  /posts/{id}/comments:
+    get:
+      tags:
+        - comments
+      summary: get all posts comments
+      operationId: getPostComments
+      parameters:
+        - in: path
+          name: id
+          description: post id comments belongs to
+          required: true
+          schema:
+            type: integer
+            format: int64
+          
+        - in: query
+          name: pageNo
+          description: "Page number to load. Default: 0"
+          required: false
+          schema:
+            type: integer
+        
+        - in: query
+          name: pageSize
+          description: "Default: 10"
+          required: false
+          schema:
+            type: integer
+        
+        - in: query
+          name: sortBy
+          description: "Default: id"
+          required: false
+          schema:
+            type: string
+        
+        - in: query
+          name: sortDir
+          description: "Default: asc"
+          required: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: Successfully retrieved all comments
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllComments'
+        404:
+          description: Resource Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseError'
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseError'
+      security:
+        - {}
+    post:
+      tags:
+      - comments
+      summary: create a comment on a post
+      operationId: createComment
+      parameters:
+        - in: path
+          name: id
+          description: post id comment belongs to
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: comment to create on a post
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Comment'
+        required: true
+      responses:
+        200:
+          description: Successfully created a post.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'
+        401:
+          description: Unauthenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseError'
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseError'
+        422:
+          description: Validation Failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseError'
+  /posts/{id}/comments/{commentId}:
+    put:
+      tags:
+      - comments
+      summary: Update an existing post
+      operationId: updateComment
+      parameters:
+        - name: id
+          in: path
+          description: ID of the post the comment belongs to
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: commentId
+          in: path
+          description: ID of the post the comment
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Comment object body
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Comment'
+        required: true
+      responses:
+        204:
+          description: Successfully updated a comment.
+          content: {}
+        401:
+          description: Unauthenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseError'
+                
+        403:
+          description: User is forbidden to update another users comment
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseError'
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseError'
+        422:
+          description: Validation Failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseError'
+        404:
+          description: Resource Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseError'
+    delete:
+      tags:
+        - comments
+      summary: Delete an existing comment
+      operationId: deleteComment
+      parameters:
+        - name: id
+          in: path
+          description: ID of the post the comment belongs to
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: commentId
+          in: path
+          description: ID of the post the comment
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        204:
+          description: Successfully deleted a post.
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Post is successfully deleted
+        404:
+          description: Resource Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseError'
+        401:
+          description: Unauthenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseError'
+        403:
+          description: User is forbidden to delete another users comment
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseError'
+  /auth/signup:
+    post:
+      tags:
+        - auth
+      summary: register a new user
+      operationId: registerUser
+      requestBody:
+        description: User info to register
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      responses:
+        200:
+          description: Successfully registered a user.
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: User is successfully registered
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseError'
+        422:
+          description: Validation Failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseError'
+  /auth/signin:
+    post:
+      tags:
+        - auth
+      summary: authenticate a user
+      operationId: authenticateUser
+      requestBody:
+        description: user authentication details
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserLogin'
+        required: true
+      responses:
+        200:
+          description: Successfully authenticated user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JWTResponse'
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseError'
+        422:
+          description: Validation Failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseError'
+      
+components:
+  schemas:
+    Post:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        title:
+          type: string
+        body:
+          type: string
+        owner:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            username:
+              type: string
+        tags:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tag'
+    AllPosts:
+      type: object
+      properties:
+        pageNo:
+          type: integer
+          format: int64
+        pageSize:
+          type: integer
+          format: int64
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int64
+        last:
+          type: boolean
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/Post'
+    AllComments:
+      type: object
+      properties:
+        pageNo:
+          type: integer
+          format: int64
+        pageSize:
+          type: integer
+          format: int64
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int64
+        last:
+          type: boolean
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/Comment'
+    Tag:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+    Comment:
+      type: object
+      properties:
+        id: 
+          type: integer
+          format: int64
+        comment:
+          type: string
+    User:
+      type: object
+      required:
+        - username
+        - email
+        - password
+      properties:
+        id:
+          type: integer
+          format: int64
+        username:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+    UserLogin:
+      type: object
+      required:
+        - usernameOrEmail
+        - password
+      properties:
+        usernameOrEmail:
+          type: string
+        password:
+          type: string
+    JWTResponse:
+      type: object
+      properties:
+        accessToken:
+          type: string
+        tokenType:
+          type: string
+    ApiResponseError:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+        message:
+          type: string
+        details:
+          type: string
+  securitySchemes:
+    bearerAuth:            # arbitrary name for the security scheme
+      type: http
+      scheme: bearer
+      bearerFormat: JWT    # optional, arbitrary value for documentation purposes
+security:
+  - bearerAuth: []
