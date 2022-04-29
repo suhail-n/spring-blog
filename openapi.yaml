@@ -1,9 +1,10 @@
 openapi: 3.0.1
 info:
   title: Spring Blog
-  description: 'This is a sample Spring Blog server rest api doc.  You can find out more about     Swagger
+  description:
+    "This is a sample Spring Blog server rest api doc.  You can find out more about     Swagger
     at [http://swagger.io](http://swagger.io) or on [irc.freenode.net, #swagger](http://swagger.io/irc/).      For
-    this sample, you can use the api key `special-key` to test the authorization     filters.'
+    this sample, you can use the api key `special-key` to test the authorization     filters."
   termsOfService: http://swagger.io/terms/
   contact:
     email: apiteam@swagger.io
@@ -15,26 +16,26 @@ externalDocs:
   description: Find out more about Swagger
   url: http://swagger.io
 servers:
-- url: https://springblog.swagger.io/v2
-- url: http://springblog.swagger.io/v2
+  - url: https://springblog.swagger.io/v2
+  - url: http://springblog.swagger.io/v2
 tags:
-- name: posts
-  description: APIs for blog posts
-  externalDocs:
-    description: Find out more
-    url: http://swagger.io
-- name: comments
-  description: API for blog post comments
-- name: auth
-  description: Operations about user
-  externalDocs:
-    description: Find out more about our store
-    url: http://swagger.io
+  - name: posts
+    description: APIs for blog posts
+    externalDocs:
+      description: Find out more
+      url: http://swagger.io
+  - name: comments
+    description: API for blog post comments
+  - name: auth
+    description: Operations about user
+    externalDocs:
+      description: Find out more about our store
+      url: http://swagger.io
 paths:
   /posts/{id}:
     put:
       tags:
-      - posts
+        - posts
       summary: Update an existing post
       operationId: updatePost
       parameters:
@@ -50,7 +51,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Post'
+              $ref: "#/components/schemas/Post"
         required: true
       responses:
         204:
@@ -61,32 +62,32 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiResponseError'
-                
+                $ref: "#/components/schemas/ApiResponseError"
+
         403:
-          description: User is forbidden to update another users post 
+          description: User is forbidden to update another users post
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiResponseError'
+                $ref: "#/components/schemas/ApiResponseError"
         400:
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiResponseError'
+                $ref: "#/components/schemas/ApiResponseError"
         422:
           description: Validation Failed
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiResponseError'
+                $ref: "#/components/schemas/ApiResponseError"
         404:
           description: Resource Not Found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiResponseError'
+                $ref: "#/components/schemas/ApiResponseError"
     get:
       tags:
         - posts
@@ -106,13 +107,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Post'
+                $ref: "#/components/schemas/Post"
         404:
           description: Resource Not Found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiResponseError'
+                $ref: "#/components/schemas/ApiResponseError"
       security:
         - {}
     delete:
@@ -141,23 +142,23 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiResponseError'
+                $ref: "#/components/schemas/ApiResponseError"
         401:
           description: Unauthenticated
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiResponseError'
+                $ref: "#/components/schemas/ApiResponseError"
         403:
           description: User is forbidden to delete another users post
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiResponseError'
+                $ref: "#/components/schemas/ApiResponseError"
   /posts:
     post:
       tags:
-      - posts
+        - posts
       summary: create a new post
       operationId: createPost
       requestBody:
@@ -165,7 +166,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Post'
+              $ref: "#/components/schemas/Post"
         required: true
       responses:
         200:
@@ -173,28 +174,28 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Post'
+                $ref: "#/components/schemas/Post"
         401:
           description: Unauthenticated
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiResponseError'
+                $ref: "#/components/schemas/ApiResponseError"
         400:
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiResponseError'
+                $ref: "#/components/schemas/ApiResponseError"
         422:
           description: Validation Failed
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiResponseError'
+                $ref: "#/components/schemas/ApiResponseError"
     get:
       tags:
-      - posts
+        - posts
       summary: get all posts
       operationId: getPosts
       parameters:
@@ -228,17 +229,17 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AllPosts'
+                $ref: "#/components/schemas/AllPosts"
         500:
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiResponseError'
-              
+                $ref: "#/components/schemas/ApiResponseError"
+
       security:
         - {}
-      
+
   /posts/{id}/comments:
     get:
       tags:
@@ -253,28 +254,28 @@ paths:
           schema:
             type: integer
             format: int64
-          
+
         - in: query
           name: pageNo
           description: "Page number to load. Default: 0"
           required: false
           schema:
             type: integer
-        
+
         - in: query
           name: pageSize
           description: "Default: 10"
           required: false
           schema:
             type: integer
-        
+
         - in: query
           name: sortBy
           description: "Default: id"
           required: false
           schema:
             type: string
-        
+
         - in: query
           name: sortDir
           description: "Default: asc"
@@ -287,24 +288,24 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AllComments'
+                $ref: "#/components/schemas/AllComments"
         404:
           description: Resource Not Found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiResponseError'
+                $ref: "#/components/schemas/ApiResponseError"
         500:
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiResponseError'
+                $ref: "#/components/schemas/ApiResponseError"
       security:
         - {}
     post:
       tags:
-      - comments
+        - comments
       summary: create a comment on a post
       operationId: createComment
       parameters:
@@ -320,7 +321,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Comment'
+              $ref: "#/components/schemas/Comment"
         required: true
       responses:
         200:
@@ -328,29 +329,29 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Comment'
+                $ref: "#/components/schemas/Comment"
         401:
           description: Unauthenticated
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiResponseError'
+                $ref: "#/components/schemas/ApiResponseError"
         400:
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiResponseError'
+                $ref: "#/components/schemas/ApiResponseError"
         422:
           description: Validation Failed
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiResponseError'
+                $ref: "#/components/schemas/ApiResponseError"
   /posts/{id}/comments/{commentId}:
     put:
       tags:
-      - comments
+        - comments
       summary: Update an existing post
       operationId: updateComment
       parameters:
@@ -373,7 +374,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Comment'
+              $ref: "#/components/schemas/Comment"
         required: true
       responses:
         204:
@@ -384,32 +385,32 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiResponseError'
-                
+                $ref: "#/components/schemas/ApiResponseError"
+
         403:
           description: User is forbidden to update another users comment
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiResponseError'
+                $ref: "#/components/schemas/ApiResponseError"
         400:
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiResponseError'
+                $ref: "#/components/schemas/ApiResponseError"
         422:
           description: Validation Failed
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiResponseError'
+                $ref: "#/components/schemas/ApiResponseError"
         404:
           description: Resource Not Found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiResponseError'
+                $ref: "#/components/schemas/ApiResponseError"
     delete:
       tags:
         - comments
@@ -443,19 +444,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiResponseError'
+                $ref: "#/components/schemas/ApiResponseError"
         401:
           description: Unauthenticated
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiResponseError'
+                $ref: "#/components/schemas/ApiResponseError"
         403:
           description: User is forbidden to delete another users comment
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiResponseError'
+                $ref: "#/components/schemas/ApiResponseError"
   /auth/signup:
     post:
       tags:
@@ -467,7 +468,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/User'
+              $ref: "#/components/schemas/User"
         required: true
       responses:
         200:
@@ -482,13 +483,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiResponseError'
+                $ref: "#/components/schemas/ApiResponseError"
         422:
           description: Validation Failed
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiResponseError'
+                $ref: "#/components/schemas/ApiResponseError"
   /auth/signin:
     post:
       tags:
@@ -500,7 +501,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserLogin'
+              $ref: "#/components/schemas/UserLogin"
         required: true
       responses:
         200:
@@ -508,20 +509,20 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/JWTResponse'
+                $ref: "#/components/schemas/JWTResponse"
         400:
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiResponseError'
+                $ref: "#/components/schemas/ApiResponseError"
         422:
           description: Validation Failed
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiResponseError'
-      
+                $ref: "#/components/schemas/ApiResponseError"
+
 components:
   schemas:
     Post:
@@ -545,7 +546,7 @@ components:
         tags:
           type: array
           items:
-            $ref: '#/components/schemas/Tag'
+            $ref: "#/components/schemas/Tag"
     AllPosts:
       type: object
       properties:
@@ -566,7 +567,7 @@ components:
         content:
           type: array
           items:
-            $ref: '#/components/schemas/Post'
+            $ref: "#/components/schemas/Post"
     AllComments:
       type: object
       properties:
@@ -587,7 +588,7 @@ components:
         content:
           type: array
           items:
-            $ref: '#/components/schemas/Comment'
+            $ref: "#/components/schemas/Comment"
     Tag:
       type: object
       properties:
@@ -599,10 +600,10 @@ components:
     Comment:
       type: object
       properties:
-        id: 
+        id:
           type: integer
           format: int64
-        comment:
+        body:
           type: string
     User:
       type: object
@@ -652,9 +653,9 @@ components:
         details:
           type: string
   securitySchemes:
-    bearerAuth:            # arbitrary name for the security scheme
+    bearerAuth: # arbitrary name for the security scheme
       type: http
       scheme: bearer
-      bearerFormat: JWT    # optional, arbitrary value for documentation purposes
+      bearerFormat: JWT # optional, arbitrary value for documentation purposes
 security:
   - bearerAuth: []
